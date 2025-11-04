@@ -8,7 +8,7 @@ The modular approach improves scalability, reusability, and maintainability by k
 
 ## Project Structure
 
-src/
+<!-- src/
 ├── app.js
 ├── app.ts
 ├── server.ts
@@ -26,7 +26,7 @@ src/
 ├── product.controller.ts
 ├── product.model.ts
 ├── product.routes.ts
-└── product.service.ts
+└── product.service.ts -->
 
 
 ### Folder Overview
