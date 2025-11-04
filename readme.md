@@ -10,26 +10,23 @@ The modular approach improves scalability, reusability, and maintainability by k
 
 src/
 ├── app.js
-├── config/
-│   └── db.js
-├── modules/
-│   ├── auth/
-│   │   ├── auth.controller.ts
-│   │   ├── auth.model.ts
-│   │   ├── auth.routes.ts
-│   │   └── auth.service.ts
-│   ├── product/
-│   │   ├── product.controller.ts
-│   │   ├── product.model.ts
-│   │   ├── product.routes.ts
-│   │   └── product.service.ts
-├── middlewares/
-│   └── authGuards/
-├── globalErrorHandler.ts
 ├── app.ts
 ├── server.ts
-└── utils/
-
+├── globalErrorHandler.ts
+├── config/db.js
+├── utils/
+├── middlewares/authGuards/
+└── modules/
+├── auth/
+│   ├── auth.controller.ts
+│   ├── auth.model.ts
+│   ├── auth.routes.ts
+│   └── auth.service.ts
+└── product/
+├── product.controller.ts
+├── product.model.ts
+├── product.routes.ts
+└── product.service.ts
 
 
 ### Folder Overview
