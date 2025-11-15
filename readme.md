@@ -57,7 +57,7 @@ The modular approach improves scalability, reusability, and maintainability by k
 
 ### Clone the repository
 ```bash
-git clone https://github.com/your-username/nodejs-modular-mvc.git
+git clone https://github.com/SouravDn-p/nodejs-modular-mvc.git
 cd nodejs-modular-mvc
 
 ---
