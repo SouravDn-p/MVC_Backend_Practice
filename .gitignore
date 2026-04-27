@@ -38,6 +38,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+public
+/public
+
+vscode
+/vscode
 temp_interactive_push.bat
 .gitignore
-config.bat
