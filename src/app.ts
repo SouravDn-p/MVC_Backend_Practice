@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import hpp from 'hpp';
 import { AppError } from "./app/common/exceptions/app-error.exception.ts";
 import { HTTP_STATUS } from "./app/common/constants/http-status.constants.ts";
-import { errorHandler } from "./app/common/exceptions/error-handler.middleware.ts";
+import { errorHandler } from "./app/common/exceptions/error-handler.exeption.ts";
 import { swaggerSpec } from "./config/swagger.config.ts";
 import swaggerUi from "swagger-ui-express";
 import authRouter from "./app/modules/auth/auth.route.ts";
@@ -50,11 +50,19 @@ export const createApp = (): Application => {
 
   app.use(hpp());
 
-  app.use(
-    "/docs",
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerSpec)
-  );
+  
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    // explorer: true,
+    customSiteTitle: "MVC API Docs",
+    swaggerOptions: {
+      persistAuthorization: true,
+      filter: true,
+    },
+  })
+);
 
   // ─── Routes ──────────────────────────────────────────────────────────────────
   app.use('/api/v1/auth', authLimiter, authRouter);

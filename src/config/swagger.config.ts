@@ -1,19 +1,20 @@
 import swaggerJsdoc from "swagger-jsdoc";
-import { ENV } from "./env.config.ts";
+import { authPaths } from "../app/modules/auth/docs/auth.swagger.ts";
+import { usersPaths } from "../app/modules/users/docs/users.swagger.ts";
 
-const options: swaggerJsdoc.Options = {
+export const swaggerSpec = swaggerJsdoc({
   definition: {
     openapi: "3.0.0",
 
     info: {
       title: "MVC API Documentation",
       version: "1.0.0",
-      description: "Production Ready Node.js MVC API",
+      description: "Production Ready Node.js MVC API Documentation featuring full Session Auth and User Profiles.",
     },
 
     servers: [
       {
-        url: `http://localhost:${ENV.PORT}/api/v1`,
+        url: "http://localhost:5000/api/v1",
         description: "Development Server",
       },
     ],
@@ -28,16 +29,11 @@ const options: swaggerJsdoc.Options = {
       },
     },
 
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    paths: {
+      ...authPaths,
+      ...usersPaths,
+    },
   },
 
-  apis: [
-    "./src/app/modules/**/*.ts",
-  ],
-};
-
-export const swaggerSpec = swaggerJsdoc(options);
+  apis: [],
+});
