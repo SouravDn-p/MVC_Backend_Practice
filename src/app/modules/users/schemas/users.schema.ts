@@ -1,80 +1,60 @@
-import mongoose, { Model, Schema  } from "mongoose";
-import type { IUser } from "../interfaces/user.interface.ts";
-import bcrypt from "bcryptjs";
-import type { NextFunction } from "express";
+import mongoose, { Schema, Document } from 'mongoose';
+import bcrypt from 'bcryptjs';
+import type { IUser } from '../interfaces/user.interface.ts';
 
-const UserSchema = new Schema<IUser>({
-    userName : {
-        type : String,
-        required: [true, "Name is required"],
-        lowercase: true , 
-        minlength: [2, "Name must be at least 2 characters"],
-        maxlength: [50, "Name must be less than 50 characters"],
-        trim:true,
-        index: true
-    },
-    fullName : {
-        type : String,
-        required: [true, "Full Name is required"],
-        lowercase: true , 
-        minlength: [2, "Name must be at least 2 characters"],
-        maxlength: [50, "Name must be less than 50 characters"],
-        trim:true,
-        index: true
+const UserSchema = new Schema<IUser>(
+  {
+    name: {
+      type: String,
+      required: [true, 'Name is required'],
+      trim: true,
+      minlength: 2,
+      maxlength: 50,
     },
     email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        lowercase: true,
-        trim: true,
-        index: true,
-        match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
-    },
-    avatar:{
-        type : String,
-        required:true
-    },
-    watchHistory : [
-        {
-            type: Schema.Types.ObjectId,
-            ref : "Video"
-        }
-    ],
-    role: {
-        type: String,
-        enum: ["user", "admin"],
-        default: "user",
+      type: String,
+      required: [true, 'Email is required'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
     },
     password: {
-        type: String,
-        required: [true, "Password is required"],
-        minlength: [8, "Password must be at least 8 characters"],
-        select: false,
+      type: String,
+      required: [true, 'Password is required'],
+      minlength: 8,
+      select: false, // NEVER returned in queries by default
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
     refreshToken: {
-        type: String,
-        select: false,
-        default: null,
+      type: String,
+      select: false, // also hidden
     },
     isActive: {
-        type: Boolean,
-        default: true,
-    },   
-},
-{
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
     timestamps: true,
     versionKey: false,
-})
+  }
+);
 
+// Hash password before saving
+UserSchema.pre<IUser>('save', async function () {
+  if (!this.isModified('password')) return;
+  const salt = await bcrypt.genSalt(12); // cost factor 12 — good balance of security/speed
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
-// UserSchema.pre<IUser>("save", async function (next : NextFunction) {
-//     if (!this.isModified("password")) return next();
-  
-//     const salt = await bcrypt.genSalt(12);
-//     this.password = await bcrypt.hash(this.password, salt);
-  
-//     next();
-// });
+// Instance method for safe comparison
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(candidatePassword, this.password);
+};
 
-export const User : Model<IUser> = mongoose.model("User", UserSchema)
+export const User = mongoose.model<IUser>('User', UserSchema);

@@ -7,7 +7,8 @@ const connectDatabase = async () : Promise<void> =>{
     try {
         mongoose.set('strictQuery', true)
 
-        await mongoose.connect(`${ENV.MONGO_URI}/mvc-template-test`,{
+        await mongoose.connect(ENV.MONGO_URI, {
+            dbName: 'mvc-template-test',
             maxPoolSize: 10,
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,

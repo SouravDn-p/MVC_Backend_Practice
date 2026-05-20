@@ -1,20 +1,16 @@
-import { Document, Types } from "mongoose";
+import { Document } from "mongoose";
 
-export type UserRole = "user" | "admin";
+
+export type UserRole = 'user' | 'admin';
 
 export interface IUser extends Document {
-  userName: string;
-  fullName: string;
+  name: string;
   email: string;
-  avatar: string;
-  watchHistory: Types.ObjectId[];
-  role: UserRole;
   password: string;
-  refreshToken?: string | null;
+  role: UserRole;
+  refreshToken?: string;
   isActive: boolean;
-  
   createdAt: Date;
   updatedAt: Date;
-
   comparePassword(candidatePassword: string): Promise<boolean>;
 }

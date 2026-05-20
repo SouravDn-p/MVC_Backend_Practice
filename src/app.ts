@@ -8,8 +8,10 @@ import hpp from 'hpp';
 import { AppError } from "./app/common/exceptions/app-error.exception.ts";
 import { HTTP_STATUS } from "./app/common/constants/http-status.constants.ts";
 import { errorHandler } from "./app/common/exceptions/error-handler.middleware.ts";
-
-
+import { swaggerSpec } from "./config/swagger.config.ts";
+import swaggerUi from "swagger-ui-express";
+import authRouter from "./app/modules/auth/auth.route.ts";
+import usersRouter from "./app/modules/users/users.routes.ts";
 
 export const createApp = (): Application => {
   const app: Application = express();
@@ -48,9 +50,15 @@ export const createApp = (): Application => {
 
   app.use(hpp());
 
+  app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec)
+  );
+
   // ─── Routes ──────────────────────────────────────────────────────────────────
-  // Example of how to apply your strict auth limiter to specific routes later:
-  // app.use('/api/v1/auth', authLimiter, authRouter);
+  app.use('/api/v1/auth', authLimiter, authRouter);
+  app.use('/api/v1/users', usersRouter);
 
   app.get('/', (req: Request, res: Response) => {
     res.send('MVC BACKEND TEMPLATE!');
