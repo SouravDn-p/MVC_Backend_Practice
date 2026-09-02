@@ -122,7 +122,7 @@ src/
 
 Modules follow `routes → controller → service → dto → doc`. Controllers stay thin; services throw `AppError`.
 
-Implementation notes: [docs/build-mvc-from-scratch.md](docs/build-mvc-from-scratch.md).
+Step-by-step from an empty folder: [docs/build-mvc-from-scratch.md](docs/build-mvc-from-scratch.md).
 
 ## License
 
