@@ -139,6 +139,46 @@ UPDATE users SET role = 'ADMIN' WHERE email = 'you@example.com';
 
 ---
 
+## Example responses
+
+Every JSON endpoint uses `{ success, message, data? }` on success and `{ success: false, message }` on error. Tokens are never in the body — they are HttpOnly cookies.
+
+Open **Swagger** at `/api/docs` and expand any operation: success and error examples are on each response.
+
+Register (201):
+
+```json
+{
+  "success": true,
+  "message": "Registration successful. Please verify your email.",
+  "data": {
+    "user": {
+      "id": "0193c0a1-8b2e-7d4f-9c11-4e6a2b8d1f03",
+      "email": "saimor@example.com",
+      "name": "Saimor"
+    }
+  }
+}
+```
+
+Login / verify-email (200) — plus `Set-Cookie`:
+
+```json
+{
+  "success": true,
+  "message": "Logged in successfully",
+  "data": { "user": { "id": "...", "name": "Saimor", "email": "saimor@example.com", "role": "USER" } }
+}
+```
+
+Error (401):
+
+```json
+{ "success": false, "message": "Invalid email or password" }
+```
+
+---
+
 ## Verify
 
 ```bash

@@ -24,6 +24,23 @@ export const swaggerSpec = swaggerJsdoc({
           description: 'HttpOnly access token set on login / verify-email / refresh',
         },
       },
+      schemas: {
+        ApiSuccess: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: true },
+            message: { type: 'string', example: 'Logged in successfully' },
+            data: { type: 'object' },
+          },
+        },
+        ApiError: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            message: { type: 'string', example: 'Invalid email or password' },
+          },
+        },
+      },
     },
     paths: {
       ...authpaths,
