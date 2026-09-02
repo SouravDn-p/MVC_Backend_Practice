@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum AuthProvider {
+  local
+  google
+}
+
+enum TokenType {
+  refresh
+  emailVerification
+  passwordReset
+}
+
+model User {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  name          String       @db.VarChar(150)
+  email         String       @unique @db.VarChar(255)
+  photo         String?
+  imagePublicId String?
+  role          UserRole     @default(USER)
+  location      String?
+  isActive      Boolean      @default(true)
+  emailVerified Boolean      @default(false)
+  provider      AuthProvider @default(local)
+  providerId    String?      @db.VarChar(255)
+  password      String
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  tokens UserToken[]
+
+  @@unique([provider, providerId])
+  @@index([role])
+  @@index([isActive])
+  @@map("users")
+}
+
+model UserToken {
+  id         String    @id @default(uuid(7)) @db.Uuid
+  userId     String    @db.Uuid
+  tokenType  TokenType @default(refresh)
+  tokenHash  String    @unique @db.VarChar(255)
+  deviceInfo Json?
+  ipAddress  String?   @db.VarChar(45)
+  userAgent  String?
+  expiresAt  DateTime
+  lastUsedAt DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, tokenType])
+  @@index([expiresAt])
+  @@map("user_tokens")
+}

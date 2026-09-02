@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mvc-postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - mvc-network
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mvc-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: postgres
+    ports:
+      - "${PORT}:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 25s
+    networks:
+      - mvc-network
+
+volumes:
+  postgres_data:
+    name: ${POSTGRES_VOLUME_NAME:-mvc_postgres_data}
+
+networks:
+  mvc-network:
+    name: ${COMPOSE_NETWORK_NAME:-mvc_network}
+    driver: bridge
